@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.MajorMapper">
+
+    <sql id="Base_Column_List">
+        id,majorId,name,description,collegeId
+    </sql>
+
+    <select id="selectAll" resultType="com.example.entity.Major">
+        --         select * from Major
+        select major.   *,college.name AS collegeName
+        from major
+        left join  college on major.collegeId=college.collegeId
+        <where>
+            <if test="id != null">and id=#{id}</if>
+            <if test="majorId != null">and majorId like concat('%', #{majorId}, '%')</if>
+            <if test="name != null">and major.name like concat('%', #{name}, '%')</if>
+            <if test="description != null">and description=#{description}</if>
+            <if test="collegeId != null">and collegeId=#{collegeId}</if>
+
+        </where>
+    </select>
+    <!-- 根据ID查询-->
+    <select id="selectById" resultType="com.example.entity.Major">
+        select
+        <include refid="Base_Column_List" />
+        from major
+        where id = #{id}
+    </select>
+
+    <!-- 删除-->
+    <delete id="deleteById">
+        delete from major
+        where  id = #{id}
+    </delete>
+
+
+
+    <!--插入-->
+    <insert id="insert" parameterType="com.example.entity.Major" useGeneratedKeys="true">
+        insert into major
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="majorId != null">majorId,</if>
+            <if test="name != null">name,</if>
+            <if test="description != null">description,</if>
+            <if test="collegeId != null">collegeId,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="majorId != null">#{majorId},</if>
+            <if test="name != null">#{name},</if>
+            <if test="description != null">#{description},</if>
+            <if test="collegeId != null">#{collegeId},</if>
+        </trim>
+    </insert>
+
+    <update id="updateById" parameterType="com.example.entity.Major">
+        update major
+        <set>
+            <if test="majorId != null"> majorId=#{majorId},</if>
+            <if test="name != null"> name=#{name},</if>
+            <if test="description != null"> description=#{description},</if>
+            <if test="collegeId != null"> collegeId=#{collegeId},</if>
+        </set>
+        where id = #{id}
+    </update>
+
+
+
+</mapper>
